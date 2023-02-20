@@ -2,13 +2,17 @@ import fs from "fs";
 import chalk from "chalk";
 
 function treatErr(err) {
-    throw err
+    throw new error(err);
 }
 
 function getArch(archWay) {
     const encoding = 'utf-8';
-    fs.readFile(archWay, encoding, (_, text) => {
-        console.log(chalk.red(text));
+    fs.readFile(archWay, encoding, (err, text) => {
+        if(err){
+            treatErr(err)
+        }else{
+            console.log(chalk.red(text));
+        }
     });
 }
 
