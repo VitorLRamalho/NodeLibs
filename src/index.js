@@ -1,37 +1,28 @@
-import fs from "fs";
-import chalk from "chalk";
+import fs from 'fs';
+import chalk from 'chalk';
 
-function treatErr(err) {
-    throw new Error(chalk.red(err.code, 'não há arquivo no diretório'));
+function extraiLinks(texto) {
+  const regex = /\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
+  const capturas = [...texto.matchAll(regex)];
+  const resultados = capturas.map(captura => ({[captura[1]]: captura[2]}))
+  return resultados.length !== 0 ? resultados : 'não há links no arquivo';
 }
 
-async function getArch(archWay) {
-   try{
-    const encoding = 'utf-8';
-    const text = await fs.promises.readFile(archWay, encoding);
-    console.log(chalk.green(text));
-   } catch(err) {
-    treatErr(err);
-   }
+function trataErro(erro) {
+  console.log(erro);
+  throw new Error(chalk.red(erro.code, 'não há arquivo no diretório'));
 }
 
-/* function getArch(archWay) {
+// async/await
+
+async function pegaArquivo(caminhoDoArquivo) {
+  try {
     const encoding = 'utf-8';
-    fs.promises.readFile(archWay, encoding)
-    .then((text) => console.log(chalk.yellow(text)))
-    .catch(treatErr);
+    const texto = await fs.promises.readFile(caminhoDoArquivo, encoding)
+    return extraiLinks(texto);
+  } catch (erro) {
+    trataErro(erro)
+  }
 }
 
- */
-/* function getArch(archWay) {
-    const encoding = 'utf-8';
-    fs.readFile(archWay, encoding, (err, text) => {
-        if(err){
-            treatErr(err)
-        }
-        console.log(chalk.green(text));
-    });
-} */
-
-getArch('./md/texto.md');
-getArch('./md/');
+export default pegaArquivo;

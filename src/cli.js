@@ -13,6 +13,7 @@ function imprimeLista(resultado, identificador = '') {
 
 async function processaTexto(argumentos) {
   const caminho = argumentos[2];
+  const valida = argumentos[3]
 
   try {
     fs.lstatSync(caminho);
